@@ -1026,12 +1026,53 @@
 	  }
 	
 	  function fakeAIReply(userText){
-	    const reply = "收到！我先帮你梳理一下：\n" +
-	      "1) 关键词：「" + userText.slice(0, 18) + (userText.length>18?'…':'') + "」\n" +
-	      "2) 你把对应代码片段贴给我，我可以直接给你改好的版本。";
-	    setTimeout(()=> addBubble(reply, 'ai'), 260);
+	  // ====== 预设问答库（放在 fakeAIReply 上面）======
+	  const QA = [
+	    {
+	      keys: ["通草堆画是什么", "什么是通草堆画", "通草堆画简介"],
+	      answer:
+	        "通草堆画是一种以通草髓片为材料的立体堆贴工艺。\n" +
+	        "匠人将通草裁成薄片并染色，再逐层堆贴形成花鸟、人物等题材，层次分明、轻盈细腻。"
+	    },
+	    {
+	      keys: ["通草堆画怎么做", "制作流程", "如何制作通草堆画", "步骤"],
+	      answer:
+	        "通草堆画常见流程：\n" +
+	        "1) 裁剪通草片（必要时先染色）\n" +
+	        "2) 分层堆贴（由里到外、由浅到深）\n" +
+	        "3) 刀尖修整弧度与纹理（比如羽毛、花瓣边缘）\n" +
+	        "4) 粘到底板并装裱成框。"
+	    }
+	  ];
+	  
+	  // ====== 匹配预设问答 ======
+	  function matchPreset(userText){
+	    const t = userText.replace(/\s+/g,'').toLowerCase();
+	    for(const item of QA){
+	      for(const k of item.keys){
+	        const key = k.replace(/\s+/g,'').toLowerCase();
+	        if(t.includes(key)) return item.answer;
+	      }
+	    }
+	    return null;
 	  }
-	
+	  
+	  // ====== 替换你的 fakeAIReply ======
+	  function fakeAIReply(userText){
+	    const preset = matchPreset(userText);
+	    if(preset){
+	      setTimeout(()=> addBubble(preset, 'ai'), 160);
+	      return;
+	    }
+	  
+	    const reply =
+	      "我可以回答这些通草堆画常见问题：\n" +
+	      "• 通草堆画是什么\n• 通草堆画怎么做\n• 制作难点\n• 保存保养\n• 文化价值\n\n" +
+	      "你也可以直接把你想问的句子发我～";
+	    setTimeout(()=> addBubble(reply, 'ai'), 200);
+	  }
+	  
+	  
 	  function onSend(){
 	    const v = text.value.trim();
 	    if(!v) return;
