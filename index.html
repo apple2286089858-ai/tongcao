@@ -674,6 +674,499 @@
     <footer style="text-align: center; padding: 40px; color: #999; font-size: 13px; border-top: 1px solid #eee;">
         <p>© 2026 通草堆画艺术馆 | 非物质文化遗产保护项目</p>
     </footer>
+	
+	
+	
+	
+	<!-- ===== AI 小助手：悬浮球 + 可拖动悬浮窗 ===== -->
+	<style>
+	  :root{
+	    --ai-z: 99999;
+	    --ai-size: 72px;
+	    --ai-ring: rgba(42,92,170,.25);
+	    --ai-shadow: 0 18px 40px rgba(0,0,0,.18);
+	    --ai-panel-w: 360px;
+	    --ai-panel-h: 520px;
+	    --ai-blue: #2a5caa;
+	    --ai-bg: rgba(255,255,255,.92);
+	    --ai-border: rgba(0,0,0,.08);
+	  }
+	
+	  /* 悬浮球 */
+	  .ai-float{
+	    position: fixed;
+	    left: 24px;
+	    top: 55%;
+	    transform: translateY(-50%);
+	    z-index: var(--ai-z);
+	    width: var(--ai-size);
+	    height: var(--ai-size);
+	    border-radius: 999px;
+	    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f6f9ff 45%, #eef4ff 100%);
+	    box-shadow: var(--ai-shadow);
+	    border: 1px solid var(--ai-border);
+	    display: grid;
+	    place-items: center;
+	    cursor: grab;
+	    user-select: none;
+	    touch-action: none; /* 触屏拖动更稳 */
+	  }
+	  .ai-float:active{ cursor: grabbing; }
+	
+	  /* 呼吸光圈 */
+	  .ai-float::before{
+	    content:"";
+	    position:absolute;
+	    inset:-10px;
+	    border-radius:999px;
+	    border: 2px solid var(--ai-ring);
+	    filter: blur(.2px);
+	    animation: aiPulse 1.8s ease-in-out infinite;
+	    pointer-events: none;
+	  }
+	  @keyframes aiPulse{
+	    0%{ transform: scale(.94); opacity:.55; }
+	    50%{ transform: scale(1.02); opacity:.25; }
+	    100%{ transform: scale(.94); opacity:.55; }
+	  }
+	
+	  /* 头像（你的IP图） */
+	  .ai-avatar{
+	    width: 58px;
+	    height: 58px;
+	    border-radius: 999px;
+	    overflow: hidden;
+	    display: grid;
+	    place-items: center;
+	    background: #fff;
+	    border: 1px solid rgba(42,92,170,.15);
+	  }
+	  .ai-avatar img{
+	    width: 100%;
+	    height: 100%;
+	    object-fit: cover;
+	    display:block;
+	    transform: translateY(2px); /* 轻微下移更“站稳” */
+	  }
+	
+	  /* 小徽标：AI */
+	  .ai-badge{
+	    position:absolute;
+	    right:-6px;
+	    bottom:-6px;
+	    background: var(--ai-blue);
+	    color:#fff;
+	    font-weight: 800;
+	    font-size: 11px;
+	    padding: 5px 7px;
+	    border-radius: 999px;
+	    box-shadow: 0 10px 22px rgba(42,92,170,.25);
+	    border: 2px solid rgba(255,255,255,.95);
+	  }
+	
+	  /* 悬浮窗容器 */
+	  .ai-panel{
+	    position: fixed;
+	    z-index: calc(var(--ai-z) - 1);
+	    width: var(--ai-panel-w);
+	    height: var(--ai-panel-h);
+	    right: 24px;
+	    bottom: 24px;
+	    border-radius: 16px;
+	    background: var(--ai-bg);
+	    border: 1px solid var(--ai-border);
+	    box-shadow: 0 22px 60px rgba(0,0,0,.22);
+	    backdrop-filter: blur(10px);
+	    overflow: hidden;
+	    display: none;
+	  }
+	  .ai-panel.open{ display: flex; flex-direction: column; }
+	
+	  /* 顶栏 */
+	  .ai-panel-header{
+	    display:flex;
+	    align-items:center;
+	    justify-content: space-between;
+	    padding: 12px 12px 10px;
+	    border-bottom: 1px solid rgba(0,0,0,.06);
+	  }
+	  .ai-title{
+	    display:flex;
+	    align-items:center;
+	    gap: 10px;
+	  }
+	  .ai-title .mini{
+	    width: 34px; height: 34px;
+	    border-radius: 999px;
+	    overflow:hidden;
+	    border: 1px solid rgba(42,92,170,.15);
+	    background:#fff;
+	  }
+	  .ai-title .mini img{ width:100%; height:100%; object-fit: cover; display:block; }
+	  .ai-title .text b{
+	    display:block;
+	    font-size: 14px;
+	    color:#111;
+	    letter-spacing: .5px;
+	  }
+	  .ai-title .text span{
+	    display:block;
+	    font-size: 12px;
+	    color:#666;
+	    margin-top: 2px;
+	  }
+	
+	  .ai-actions{
+	    display:flex;
+	    gap: 8px;
+	  }
+	  .ai-btn{
+	    width: 34px;
+	    height: 34px;
+	    border-radius: 10px;
+	    border: 1px solid rgba(0,0,0,.08);
+	    background: rgba(255,255,255,.8);
+	    cursor: pointer;
+	    display:grid;
+	    place-items:center;
+	    transition: transform .15s ease, background .15s ease;
+	  }
+	  .ai-btn:hover{ transform: translateY(-1px); background:#fff; }
+	  .ai-btn svg{ width: 18px; height:18px; opacity:.85; }
+	
+	  /* 对话区 */
+	  .ai-messages{
+	    padding: 14px;
+	    overflow: auto;
+	    flex: 1;
+	  }
+	  .bubble{
+	    max-width: 86%;
+	    padding: 10px 12px;
+	    border-radius: 14px;
+	    margin: 8px 0;
+	    line-height: 1.55;
+	    font-size: 13px;
+	    border: 1px solid rgba(0,0,0,.06);
+	    background: rgba(255,255,255,.85);
+	  }
+	  .bubble.me{
+	    margin-left: auto;
+	    background: rgba(42,92,170,.10);
+	    border-color: rgba(42,92,170,.18);
+	  }
+	  .bubble.ai{
+	    margin-right: auto;
+	  }
+	
+	  /* 输入区 */
+	  .ai-input{
+	    padding: 10px;
+	    border-top: 1px solid rgba(0,0,0,.06);
+	    background: rgba(255,255,255,.75);
+	    display:flex;
+	    gap: 10px;
+	    align-items:center;
+	  }
+	  .ai-input textarea{
+	    flex:1;
+	    resize: none;
+	    height: 40px;
+	    max-height: 120px;
+	    padding: 10px 12px;
+	    border-radius: 12px;
+	    border: 1px solid rgba(0,0,0,.10);
+	    outline: none;
+	    font-size: 13px;
+	    background: rgba(255,255,255,.95);
+	  }
+	  .ai-send{
+	    padding: 10px 12px;
+	    border: none;
+	    border-radius: 12px;
+	    background: var(--ai-blue);
+	    color:#fff;
+	    font-weight: 700;
+	    cursor: pointer;
+	    box-shadow: 0 12px 28px rgba(42,92,170,.25);
+	  }
+	
+	  /* 手机端：面板全屏底部抽屉感 */
+	  @media (max-width: 560px){
+	    :root{ --ai-size: 64px; }
+	    .ai-panel{
+	      right: 10px;
+	      left: 10px;
+	      bottom: 10px;
+	      width: auto;
+	      height: min(560px, 78vh);
+	      border-radius: 18px;
+	    }
+	  }
+	</style>
+	
+	<!-- 悬浮球 -->
+	<div id="aiFloat" class="ai-float" aria-label="AI小助手悬浮球" title="AI 小助手（拖动/点击）">
+	  <div class="ai-avatar">
+	    <img src="图片/logo.png" alt="AI 小助手">
+	  </div>
+	  <div class="ai-badge">AI</div>
+	</div>
+	
+	<!-- 悬浮窗 -->
+	<div id="aiPanel" class="ai-panel" aria-label="AI小助手悬浮窗">
+	  <div class="ai-panel-header">
+	    <div class="ai-title">
+	      <div class="mini"><img src="图片/logo.png" alt=""></div>
+	      <div class="text">
+	        <b>AI 小助手</b>
+	        <span>拖动悬浮球 · 点击答疑</span>
+	      </div>
+	    </div>
+	
+	    <div class="ai-actions">
+	      <!-- 清空 -->
+	      <button class="ai-btn" id="aiClear" title="清空对话">
+	        <svg viewBox="0 0 24 24" fill="none"><path d="M6 7h12m-9 0v12m6-12v12M9 7l1-2h4l1 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+	      </button>
+	      <!-- 关闭 -->
+	      <button class="ai-btn" id="aiClose" title="关闭">
+	        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+	      </button>
+	    </div>
+	  </div>
+	
+	  <div class="ai-messages" id="aiMsgs">
+	    <div class="bubble ai">你好呀～我可以帮你解答网站、通草堆画内容、排版、图片引用等问题。你想问什么？</div>
+	  </div>
+	
+	  <div class="ai-input">
+	    <textarea id="aiText" placeholder="输入问题（Enter 发送，Shift+Enter 换行）"></textarea>
+	    <button class="ai-send" id="aiSend">发送</button>
+	  </div>
+	</div>
+	
+	<script>
+	(function(){
+	  const floatBtn = document.getElementById('aiFloat');
+	  const panel = document.getElementById('aiPanel');
+	  const closeBtn = document.getElementById('aiClose');
+	  const clearBtn = document.getElementById('aiClear');
+	  const msgs = document.getElementById('aiMsgs');
+	  const text = document.getElementById('aiText');
+	  const send = document.getElementById('aiSend');
+	
+	  // ====== 工具：限制在屏幕内 ======
+	  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+	
+	  // ====== 让面板紧贴悬浮球展开 ======
+	  function positionPanelNearFloat(){
+	    // 先把 right/bottom 失效（否则永远右下角）
+	    panel.style.right = 'auto';
+	    panel.style.bottom = 'auto';
+	
+	    const fr = floatBtn.getBoundingClientRect();
+	
+	    const gap = 14; // 悬浮球与面板间距
+	    const pw = panel.offsetWidth || 360;
+	    const ph = panel.offsetHeight || 520;
+	
+	    // 默认：面板在悬浮球右侧
+	    let left = fr.right + gap;
+	    let top  = fr.top + (fr.height/2) - (ph/2);
+	
+	    // 如果右侧放不下 -> 放到左侧
+	    if(left + pw > window.innerWidth - 8){
+	      left = fr.left - gap - pw;
+	    }
+	
+	    // 再做边界限制
+	    left = clamp(left, 8, window.innerWidth - pw - 8);
+	    top  = clamp(top,  8, window.innerHeight - ph - 8);
+	
+	    panel.style.left = left + 'px';
+	    panel.style.top  = top  + 'px';
+	  }
+	
+	  // ====== 打开/关闭 ======
+	  function openPanel(){
+	    panel.classList.add('open');
+	    // 面板display从none变flex后才有尺寸，所以用requestAnimationFrame
+	    requestAnimationFrame(positionPanelNearFloat);
+	  }
+	  function closePanel(){ panel.classList.remove('open'); }
+	  function togglePanel(){
+	    if(panel.classList.contains('open')) closePanel();
+	    else openPanel();
+	  }
+	
+	  closeBtn.addEventListener('click', closePanel);
+	
+	  // 点击外部关闭（可选）
+	  document.addEventListener('click', (e) => {
+	    if(panel.classList.contains('open') &&
+	       !panel.contains(e.target) &&
+	       !floatBtn.contains(e.target)){
+	      closePanel();
+	    }
+	  });
+	
+	  // ====== 清空对话（仅 UI） ======
+	  clearBtn.addEventListener('click', () => {
+	    msgs.innerHTML = '<div class="bubble ai">已清空～继续问我吧！</div>';
+	  });
+	
+	  // ====== 发送消息（前端演示） ======
+	  function addBubble(content, who='me'){
+	    const div = document.createElement('div');
+	    div.className = 'bubble ' + (who === 'me' ? 'me' : 'ai');
+	    div.textContent = content;
+	    msgs.appendChild(div);
+	    msgs.scrollTop = msgs.scrollHeight;
+	  }
+	
+	  function fakeAIReply(userText){
+	    const reply = "收到！我先帮你梳理一下：\n" +
+	      "1) 关键词：「" + userText.slice(0, 18) + (userText.length>18?'…':'') + "」\n" +
+	      "2) 你把对应代码片段贴给我，我可以直接给你改好的版本。";
+	    setTimeout(()=> addBubble(reply, 'ai'), 260);
+	  }
+	
+	  function onSend(){
+	    const v = text.value.trim();
+	    if(!v) return;
+	    addBubble(v, 'me');
+	    text.value = '';
+	    text.style.height = '40px';
+	    fakeAIReply(v);
+	  }
+	
+	  send.addEventListener('click', onSend);
+	  text.addEventListener('keydown', (e) => {
+	    if(e.key === 'Enter' && !e.shiftKey){
+	      e.preventDefault();
+	      onSend();
+	    }
+	  });
+	  text.addEventListener('input', () => {
+	    text.style.height = '40px';
+	    text.style.height = Math.min(text.scrollHeight, 120) + 'px';
+	  });
+	
+	  // ====== 拖动：Pointer Events ======
+	  let dragging = false;
+	  let moved = false;
+	  let offsetX = 0, offsetY = 0;
+	
+	  // 重要：一旦你要拖动定位，就别再让 transform 控制位置
+	  // 初始化：读取位置
+	  const saved = localStorage.getItem('aiFloatPos');
+	  if(saved){
+	    try{
+	      const {left, top} = JSON.parse(saved);
+	      floatBtn.style.left = left + 'px';
+	      floatBtn.style.top = top + 'px';
+	      floatBtn.style.right = 'auto';     // 关键：解除默认 left+transform 或 right 定位
+	      floatBtn.style.transform = 'none'; // 关键：解除 translateY(-50%)
+	    }catch(e){}
+	  }else{
+	    // 没存过：把你CSS里 left/top/transform 的初始效果“固化”为像素
+	    const r = floatBtn.getBoundingClientRect();
+	    floatBtn.style.left = r.left + 'px';
+	    floatBtn.style.top = r.top + 'px';
+	    floatBtn.style.right = 'auto';
+	    floatBtn.style.transform = 'none';
+	  }
+	
+	  floatBtn.addEventListener('pointerdown', (e) => {
+	    // ✅ 只允许鼠标左键（0），触摸/笔也允许
+	    if (e.pointerType === 'mouse' && e.button !== 0) return;
+	  
+	    dragging = true;
+	    moved = false;
+	    floatBtn.setPointerCapture(e.pointerId);
+	  
+	    const r = floatBtn.getBoundingClientRect();
+	    offsetX = e.clientX - r.left;
+	    offsetY = e.clientY - r.top;
+	  });
+	floatBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+	floatBtn.addEventListener('pointercancel', () => { dragging = false; });
+	
+	
+	  floatBtn.addEventListener('pointermove', (e) => {
+	    if(!dragging) return;
+	
+	    const dx = Math.abs(e.movementX) + Math.abs(e.movementY);
+	    if(dx > 0) moved = true;
+	
+	    const w = floatBtn.offsetWidth;
+	    const h = floatBtn.offsetHeight;
+	
+	    let left = e.clientX - offsetX;
+	    let top  = e.clientY - offsetY;
+	
+	    left = clamp(left, 8, window.innerWidth - w - 8);
+	    top  = clamp(top,  8, window.innerHeight - h - 8);
+	
+	    floatBtn.style.left = left + 'px';
+	    floatBtn.style.top  = top  + 'px';
+	
+	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top}));
+	
+	    // 拖动时如果面板开着，让面板跟着悬浮球移动
+	    if(panel.classList.contains('open')){
+	      positionPanelNearFloat();
+	    }
+	  });
+	
+	  function snapToEdge(){
+	    const r = floatBtn.getBoundingClientRect();
+	    const w = r.width;
+	    const leftEdge = 8;
+	    const rightEdge = window.innerWidth - w - 8;
+	    const left = (r.left + w/2) < window.innerWidth/2 ? leftEdge : rightEdge;
+	
+	    floatBtn.style.left = left + 'px';
+	    floatBtn.style.top  = r.top + 'px';
+	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top: r.top}));
+	
+	    if(panel.classList.contains('open')){
+	      positionPanelNearFloat();
+	    }
+	  }
+	floatBtn.addEventListener('pointerup', (e) => {
+	  dragging = false;
+	
+	  // ✅ 没怎么移动 = 点击
+	  if(!moved){
+	    togglePanel();
+	    return;
+	  }
+	
+	  // ✅ 移动过 = 松开就固定（不吸边）
+	  const rect = floatBtn.getBoundingClientRect();
+	  localStorage.setItem('aiFloatPos', JSON.stringify({ left: rect.left, top: rect.top }));
+	});
+	
+	
+	  window.addEventListener('resize', () => {
+	    const r = floatBtn.getBoundingClientRect();
+	    const w = r.width;
+	    const h = r.height;
+	    const left = clamp(r.left, 8, window.innerWidth - w - 8);
+	    const top  = clamp(r.top,  8, window.innerHeight - h - 8);
+	    floatBtn.style.left = left + 'px';
+	    floatBtn.style.top  = top  + 'px';
+	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top}));
+	
+	    if(panel.classList.contains('open')){
+	      positionPanelNearFloat();
+	    }
+	  });
+	
+	})();
+	</script>
 
 </body>
 </html>
