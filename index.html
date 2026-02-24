@@ -959,74 +959,7 @@
 	  // ====== 工具：限制在屏幕内 ======
 	  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 	
-	  // ====== 让面板紧贴悬浮球展开 ======
-	  function positionPanelNearFloat(){
-	    // 先把 right/bottom 失效（否则永远右下角）
-	    panel.style.right = 'auto';
-	    panel.style.bottom = 'auto';
-	
-	    const fr = floatBtn.getBoundingClientRect();
-	
-	    const gap = 14; // 悬浮球与面板间距
-	    const pw = panel.offsetWidth || 360;
-	    const ph = panel.offsetHeight || 520;
-	
-	    // 默认：面板在悬浮球右侧
-	    let left = fr.right + gap;
-	    let top  = fr.top + (fr.height/2) - (ph/2);
-	
-	    // 如果右侧放不下 -> 放到左侧
-	    if(left + pw > window.innerWidth - 8){
-	      left = fr.left - gap - pw;
-	    }
-	
-	    // 再做边界限制
-	    left = clamp(left, 8, window.innerWidth - pw - 8);
-	    top  = clamp(top,  8, window.innerHeight - ph - 8);
-	
-	    panel.style.left = left + 'px';
-	    panel.style.top  = top  + 'px';
-	  }
-	
-	  // ====== 打开/关闭 ======
-	  function openPanel(){
-	    panel.classList.add('open');
-	    // 面板display从none变flex后才有尺寸，所以用requestAnimationFrame
-	    requestAnimationFrame(positionPanelNearFloat);
-	  }
-	  function closePanel(){ panel.classList.remove('open'); }
-	  function togglePanel(){
-	    if(panel.classList.contains('open')) closePanel();
-	    else openPanel();
-	  }
-	
-	  closeBtn.addEventListener('click', closePanel);
-	
-	  // 点击外部关闭（可选）
-	  document.addEventListener('click', (e) => {
-	    if(panel.classList.contains('open') &&
-	       !panel.contains(e.target) &&
-	       !floatBtn.contains(e.target)){
-	      closePanel();
-	    }
-	  });
-	
-	  // ====== 清空对话（仅 UI） ======
-	  clearBtn.addEventListener('click', () => {
-	    msgs.innerHTML = '<div class="bubble ai">已清空～继续问我吧！</div>';
-	  });
-	
-	  // ====== 发送消息（前端演示） ======
-	  function addBubble(content, who='me'){
-	    const div = document.createElement('div');
-	    div.className = 'bubble ' + (who === 'me' ? 'me' : 'ai');
-	    div.textContent = content;
-	    msgs.appendChild(div);
-	    msgs.scrollTop = msgs.scrollHeight;
-	  }
-	
-	  function fakeAIReply(userText){
-	  // ====== 预设问答库（放在 fakeAIReply 上面）======
+	  // ====== 预设问答库（✅ 放外层）======
 	  const QA = [
 	    {
 	      keys: ["通草堆画是什么", "什么是通草堆画", "通草堆画简介"],
@@ -1042,10 +975,17 @@
 	        "2) 分层堆贴（由里到外、由浅到深）\n" +
 	        "3) 刀尖修整弧度与纹理（比如羽毛、花瓣边缘）\n" +
 	        "4) 粘到底板并装裱成框。"
+	    },
+	    {
+	      keys: ["制作难点", "难点", "为什么难"],
+	      answer:
+	        "主要难点：\n" +
+	        "① 通草片很薄，上胶力度要稳；\n" +
+	        "② 层次堆贴要“堆得准”，不然立体感会乱；\n" +
+	        "③ 羽毛/花瓣纹理靠刀工，刮深就不可逆。"
 	    }
 	  ];
-	  
-	  // ====== 匹配预设问答 ======
+	
 	  function matchPreset(userText){
 	    const t = userText.replace(/\s+/g,'').toLowerCase();
 	    for(const item of QA){
@@ -1056,23 +996,81 @@
 	    }
 	    return null;
 	  }
-	  
-	  // ====== 替换你的 fakeAIReply ======
+	
+	  // ====== 让面板紧贴悬浮球展开 ======
+	  function positionPanelNearFloat(){
+	    panel.style.right = 'auto';
+	    panel.style.bottom = 'auto';
+	
+	    const fr = floatBtn.getBoundingClientRect();
+	    const gap = 14;
+	    const pw = panel.offsetWidth || 360;
+	    const ph = panel.offsetHeight || 520;
+	
+	    let left = fr.right + gap;
+	    let top  = fr.top + (fr.height/2) - (ph/2);
+	
+	    if(left + pw > window.innerWidth - 8){
+	      left = fr.left - gap - pw;
+	    }
+	
+	    left = clamp(left, 8, window.innerWidth - pw - 8);
+	    top  = clamp(top,  8, window.innerHeight - ph - 8);
+	
+	    panel.style.left = left + 'px';
+	    panel.style.top  = top  + 'px';
+	  }
+	
+	  // ====== 打开/关闭 ======
+	  function openPanel(){
+	    panel.classList.add('open');
+	    requestAnimationFrame(positionPanelNearFloat);
+	  }
+	  function closePanel(){ panel.classList.remove('open'); }
+	  function togglePanel(){
+	    if(panel.classList.contains('open')) closePanel();
+	    else openPanel();
+	  }
+	
+	  closeBtn.addEventListener('click', closePanel);
+	
+	  document.addEventListener('click', (e) => {
+	    if(panel.classList.contains('open') &&
+	       !panel.contains(e.target) &&
+	       !floatBtn.contains(e.target)){
+	      closePanel();
+	    }
+	  });
+	
+	  // ====== 清空对话（仅 UI） ======
+	  clearBtn.addEventListener('click', () => {
+	    msgs.innerHTML = '<div class="bubble ai">已清空～继续问我吧！</div>';
+	  });
+	
+	  // ====== 加气泡 ======
+	  function addBubble(content, who='me'){
+	    const div = document.createElement('div');
+	    div.className = 'bubble ' + (who === 'me' ? 'me' : 'ai');
+	    div.textContent = content;
+	    msgs.appendChild(div);
+	    msgs.scrollTop = msgs.scrollHeight;
+	  }
+	
+	  // ====== AI 回复（✅ 只有一个 fakeAIReply） ======
 	  function fakeAIReply(userText){
 	    const preset = matchPreset(userText);
 	    if(preset){
 	      setTimeout(()=> addBubble(preset, 'ai'), 160);
 	      return;
 	    }
-	  
+	
 	    const reply =
 	      "我可以回答这些通草堆画常见问题：\n" +
-	      "• 通草堆画是什么\n• 通草堆画怎么做\n• 制作难点\n• 保存保养\n• 文化价值\n\n" +
+	      "• 通草堆画是什么\n• 通草堆画怎么做\n• 制作难点\n\n" +
 	      "你也可以直接把你想问的句子发我～";
 	    setTimeout(()=> addBubble(reply, 'ai'), 200);
 	  }
-	  
-	  
+	
 	  function onSend(){
 	    const v = text.value.trim();
 	    if(!v) return;
@@ -1099,19 +1097,16 @@
 	  let moved = false;
 	  let offsetX = 0, offsetY = 0;
 	
-	  // 重要：一旦你要拖动定位，就别再让 transform 控制位置
-	  // 初始化：读取位置
 	  const saved = localStorage.getItem('aiFloatPos');
 	  if(saved){
 	    try{
 	      const {left, top} = JSON.parse(saved);
 	      floatBtn.style.left = left + 'px';
 	      floatBtn.style.top = top + 'px';
-	      floatBtn.style.right = 'auto';     // 关键：解除默认 left+transform 或 right 定位
-	      floatBtn.style.transform = 'none'; // 关键：解除 translateY(-50%)
+	      floatBtn.style.right = 'auto';
+	      floatBtn.style.transform = 'none';
 	    }catch(e){}
 	  }else{
-	    // 没存过：把你CSS里 left/top/transform 的初始效果“固化”为像素
 	    const r = floatBtn.getBoundingClientRect();
 	    floatBtn.style.left = r.left + 'px';
 	    floatBtn.style.top = r.top + 'px';
@@ -1120,26 +1115,23 @@
 	  }
 	
 	  floatBtn.addEventListener('pointerdown', (e) => {
-	    // ✅ 只允许鼠标左键（0），触摸/笔也允许
 	    if (e.pointerType === 'mouse' && e.button !== 0) return;
-	  
 	    dragging = true;
 	    moved = false;
 	    floatBtn.setPointerCapture(e.pointerId);
-	  
+	
 	    const r = floatBtn.getBoundingClientRect();
 	    offsetX = e.clientX - r.left;
 	    offsetY = e.clientY - r.top;
 	  });
-	floatBtn.addEventListener('contextmenu', (e) => e.preventDefault());
-	floatBtn.addEventListener('pointercancel', () => { dragging = false; });
 	
+	  floatBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+	  floatBtn.addEventListener('pointercancel', () => { dragging = false; });
 	
 	  floatBtn.addEventListener('pointermove', (e) => {
 	    if(!dragging) return;
 	
-	    const dx = Math.abs(e.movementX) + Math.abs(e.movementY);
-	    if(dx > 0) moved = true;
+	    if(Math.abs(e.movementX) + Math.abs(e.movementY) > 2) moved = true;
 	
 	    const w = floatBtn.offsetWidth;
 	    const h = floatBtn.offsetHeight;
@@ -1152,44 +1144,22 @@
 	
 	    floatBtn.style.left = left + 'px';
 	    floatBtn.style.top  = top  + 'px';
-	
 	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top}));
 	
-	    // 拖动时如果面板开着，让面板跟着悬浮球移动
-	    if(panel.classList.contains('open')){
-	      positionPanelNearFloat();
-	    }
+	    if(panel.classList.contains('open')) positionPanelNearFloat();
 	  });
 	
-	  function snapToEdge(){
-	    const r = floatBtn.getBoundingClientRect();
-	    const w = r.width;
-	    const leftEdge = 8;
-	    const rightEdge = window.innerWidth - w - 8;
-	    const left = (r.left + w/2) < window.innerWidth/2 ? leftEdge : rightEdge;
+	  floatBtn.addEventListener('pointerup', () => {
+	    dragging = false;
 	
-	    floatBtn.style.left = left + 'px';
-	    floatBtn.style.top  = r.top + 'px';
-	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top: r.top}));
-	
-	    if(panel.classList.contains('open')){
-	      positionPanelNearFloat();
+	    if(!moved){
+	      togglePanel();
+	      return;
 	    }
-	  }
-	floatBtn.addEventListener('pointerup', (e) => {
-	  dragging = false;
 	
-	  // ✅ 没怎么移动 = 点击
-	  if(!moved){
-	    togglePanel();
-	    return;
-	  }
-	
-	  // ✅ 移动过 = 松开就固定（不吸边）
-	  const rect = floatBtn.getBoundingClientRect();
-	  localStorage.setItem('aiFloatPos', JSON.stringify({ left: rect.left, top: rect.top }));
-	});
-	
+	    const rect = floatBtn.getBoundingClientRect();
+	    localStorage.setItem('aiFloatPos', JSON.stringify({ left: rect.left, top: rect.top }));
+	  });
 	
 	  window.addEventListener('resize', () => {
 	    const r = floatBtn.getBoundingClientRect();
@@ -1201,14 +1171,11 @@
 	    floatBtn.style.top  = top  + 'px';
 	    localStorage.setItem('aiFloatPos', JSON.stringify({left, top}));
 	
-	    if(panel.classList.contains('open')){
-	      positionPanelNearFloat();
-	    }
+	    if(panel.classList.contains('open')) positionPanelNearFloat();
 	  });
 	
 	})();
 	</script>
-
 </body>
 </html>
 <script>
