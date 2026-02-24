@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通草堆画 - 非遗文化传承</title>
+    <style>
+        :root {
+            --primary-blue: #2a5caa;
+            --bg-light: #f4f4f4;
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --accent-gold: #b8974d;
+        }
+
+        /* 1. 细节优化：增加丝滑滚动和字体平滑 */
+        html { scroll-behavior: smooth; }
+        body { 
+            margin: 0; 
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; 
+            background-color: #fff; 
+            color: var(--text-dark); 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* 导航栏：增加阴影和固定效果（可选） */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 8%; 
+            background: rgba(255,255,255,0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo-box { height: 45px; width: auto; }
+        nav a { 
+            text-decoration: none; 
+            color: var(--text-dark); 
+            margin-left: 30px; 
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--primary-blue); }
+
+        /* 英雄区：优化文字排版 */
+        .hero { padding: 40px 8%; text-align: center; }
+        .hero-banner {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 2.35 / 1; /* 电影画幅比例，更具艺术感 */
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .hero-text { padding: 50px 0; max-width: 800px; margin: 0 auto; }
+        .hero-text h2 { 
+            font-size: 28px; 
+            letter-spacing: 2px; 
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+        .hero-text p { color: var(--text-gray); line-height: 2; font-size: 16px; }
+
+        /* 2. 产品六宫格：增加悬停动画 */
+        .product-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            padding: 60px 8%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .product-card {
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border-radius: 2px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background: #f9f9f9;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* 3. 制作流程：优化背景和对比度 */
+        .process-section { 
+            background: linear-gradient(to bottom, #fdfaf2, #f9f3e6); 
+            padding: 80px 8%; 
+            text-align: center; 
+        }
+        .section-title { font-size: 24px; margin-bottom: 50px; position: relative; display: inline-block; }
+        .section-title::after {
+            content: ""; width: 50%; height: 2px; background: var(--primary-blue);
+            position: absolute; bottom: -10px; left: 25%;
+        }
+        .process-steps {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .step-item p { margin-top: 15px; font-weight: bold; color: #555; }
+        .step-img-box {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 240px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        /* 4. 视频播放器：增加毛玻璃效果播放键 */
+        .video-box {
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .play-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.2);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .video-box:hover .play-overlay { background: rgba(0,0,0,0.4); }
+        .play-btn {
+            width: 70px; height: 70px;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        /* 5. 底部文化价值：对应 UI 的绿色块 */
+        .culture-section {
+            background-color: #f1f4ea; 
+            margin: 80px 8%;
+            padding: 60px;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .product-section { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .process-steps { flex-direction: column; }
+            .hero-text h2 { font-size: 22px; }
+            .culture-section { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-box">
+            <img src="图片/logo.png" alt="通草堆画" style="object-fit: contain;">
+        </div>
+        <nav>
+            <a href="#">首页</a><a href="#">品牌故事</a><a href="#">作品赏析</a><a href="#">私人定制</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-banner">
+                <img src="图片/kongque.jpg" alt="通草堆画孔雀图">
+            </div>
+            <article class="hero-text">
+                <h2>您值得信赖的非遗守护者 · 通草堆画</h2>
+                <p>通草画艺术起源于秦汉，盛行于两晋，不仅是技艺的堆叠，更是对中式审美意境的深情表达。每一片通草的修剪与粘贴，都凝聚了匠人对时光的敬畏。</p>
+            </article>
+        </section>
+
+        <div style="text-align: center; padding-bottom: 40px;">
+            <img src="图片/title_calligraphy.png" alt="书法标题" style="width: 200px; margin: 0 auto; height: auto;">
+        </div>
+
+        <section class="product-section">
+            <div class="product-card"><img src="图片/p1.jpg" alt="作品1"></div>
+            <div class="product-card"><img src="图片/p2.jpg" alt="作品2"></div>
+            <div class="product-card"><img src="图片/p3.jpg" alt="作品3"></div>
+            <div class="product-card"><img src="图片/p4.jpg" alt="作品4"></div>
+            <div class="product-card"><img src="图片/p5.jpg" alt="作品5"></div>
+            <div class="product-card"><img src="图片/p6.jpg" alt="作品6"></div>
+        </section>
+
+        <section class="process-section">
+            <h3 class="section-title">通草堆画制作详解</h3>
+            <div class="process-steps">
+                <div class="step-item">
+                    <div class="step-img-box"><img src="图片/step1.jpg" alt="步骤1"></div>
+                    <p>01. 裁剪通草片</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-img-box"><img src="图片/step2.jpg" alt="步骤2"></div>
+                    <p>02. 粘贴与堆叠</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-img-box"><img src="图片/step3.jpg" alt="步骤3"></div>
+                    <p>03. 局部修整成型</p>
+                </div>
+            </div>
+
+            <div class="video-box">
+                <img src="图片/video_cover.jpg" alt="视频封面">
+                <div class="play-overlay">
+                    <div class="play-btn">▶</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="culture-section">
+            <h3 style="color: #4a5a2c; margin-bottom: 25px;">通草堆画的文化与价值</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div>
+                    <h4 style="color: #2a5caa;">东方审美与中式意境</h4>
+                    <p style="font-size: 14px; color: #555;">通草堆画以纸为媒，题材取自花鸟山水，追求“天人合一”的审美高度。</p>
+                </div>
+                <div>
+                    <h4 style="color: #2a5caa;">技艺精湛与独具匠心</h4>
+                    <p style="font-size: 14px; color: #555;">全过程纯手工制作，无法被机器复制，每一件作品都是匠人心血的结晶。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: #999; font-size: 13px; border-top: 1px solid #eee;">
+        <p>© 2026 通草堆画艺术馆 | 非物质文化遗产保护项目</p>
+    </footer>
+
+</body>
+</html>
