@@ -118,6 +118,11 @@
        .nav-sub {
            display: none;
        }
+	   /* ⭐ 新增：隐藏“通草堆话”文字 */
+	     .logo-text {
+	       display: none;
+	     }
+
    
        /* 缩小主标题 */
        .nav-title {
@@ -143,7 +148,7 @@
       padding: 0 8%;
     }
     .banner-box{
-      aspect-ratio: 4 / 1.35; /* 你截图类似长条 */
+      aspect-ratio: 4 / 1.35; /
       border-radius: 10px;
       overflow: hidden;
       background:#eee;
@@ -219,14 +224,39 @@
     }
 
    .cards-wall{
-     width: 100%;                       /* 关键：别用 min(860px...) 限死 */
-     max-width: 1040px;                 /* 控制整体最大宽度（你可调 980/1100） */
+     width: 100%;                       
+     max-width: 1040px;                 /* 控制整体最大宽度（可调 980/1100） */
      margin: 0 auto 60px;
      display: grid;
      grid-template-columns: repeat(3, minmax(0, 1fr)); /* 关键：三列铺满 */
      gap: 22px;
      align-items: start;
      justify-content: center;
+   }
+   /* ✅ 盲盒区域：后面加浅绿底色块 */
+   .cards-area{
+     position: relative;
+     padding: 34px 0 42px;   /* 色块上下留白 */
+     margin: 10px 0 60px;    /* 和上下内容拉开一点 */
+   }
+   
+   .cards-area::before{
+     content:"";
+     position:absolute;
+     left: 50%;
+     transform: translateX(-50%);
+     top: 58px;              /* 让色块从卡片上方一点开始（可调） */
+     width: min(980px, 100%);/* 色块宽度（可调） */
+     height: 58%;            /* 色块高度（可调） */
+     background: #DFF0C0;
+     border-radius: 10px;
+     z-index: 0;
+   }
+   
+   /* 让卡片层级压在色块上 */
+   .cards-wall{
+     position: relative;
+     z-index: 1;
    }
    
     .blind-card{
@@ -382,13 +412,15 @@
     <!-- 3) 盲盒图片示例 -->
     <h3 class="sub-title">盲盒图片示例</h3>
 
-    <section class="cards-wall">
-      <div class="blind-card"><img src="图片/box1.jpg" alt="盲盒1"></div>
-      <div class="blind-card"><img src="图片/box2.jpg" alt="盲盒2"></div>
-      <div class="blind-card"><img src="图片/box3.jpg" alt="盲盒3"></div>
-      <div class="blind-card"><img src="图片/box4.jpg" alt="盲盒4"></div>
-      <div class="blind-card"><img src="图片/box5.jpg" alt="盲盒5"></div>
-      <div class="blind-card"><img src="图片/box6.jpg" alt="盲盒6"></div>
+    <section class="cards-area">
+      <section class="cards-wall">
+        <div class="blind-card"><img src="图片/box1.jpg" alt="盲盒1"></div>
+        <div class="blind-card"><img src="图片/box2.jpg" alt="盲盒2"></div>
+        <div class="blind-card"><img src="图片/box3.jpg" alt="盲盒3"></div>
+        <div class="blind-card"><img src="图片/box4.jpg" alt="盲盒4"></div>
+        <div class="blind-card"><img src="图片/box5.jpg" alt="盲盒5"></div>
+        <div class="blind-card"><img src="图片/box6.jpg" alt="盲盒6"></div>
+      </section>
     </section>
   </main>
   
@@ -649,7 +681,7 @@
   <div id="aiPanel" class="ai-panel" aria-label="AI小助手悬浮窗">
     <div class="ai-panel-header">
       <div class="ai-title">
-        <div class="mini"><img src="图片/logo.png" alt=""></div>
+        <div class="mini"><img src="图片/logo2.png" alt=""></div>
         <div class="text">
           <b>AI 小助手</b>
           <span>拖动悬浮球 · 点击答疑</span>
@@ -669,7 +701,7 @@
     </div>
   
     <div class="ai-messages" id="aiMsgs">
-      <div class="bubble ai">你好呀～我可以帮你解答网站、通草堆画内容、排版、图片引用等问题。你想问什么？</div>
+      <div class="bubble ai">你好呀～我是你的AI小助手通通草草，我可以帮你解答网站、通草堆画内容、排版、图片引用等问题。你想问什么？</div>
     </div>
   
     <div class="ai-input">
