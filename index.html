@@ -49,22 +49,52 @@
 
         /* 英雄区：优化文字排版 */
         .hero { padding: 40px 8%; text-align: center; }
-        .hero-banner {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 2.35 / 1; /* 电影画幅比例，更具艺术感 */
-            overflow: hidden;
-            border-radius: 4px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+       
+		.hero-banner {
+		    width: 100%;
+		    aspect-ratio: 3.5 / 1;   /* ← 更扁、更高级 */
+		    overflow: hidden;
+		    border-radius: 6px;
+		    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+		}
+      
+		/* ===== 首页介绍区 ===== */
+        .hero-text p{
+          text-indent: 2em;
         }
-        .hero-text { padding: 50px 0; max-width: 800px; margin: 0 auto; }
-        .hero-text h2 { 
-            font-size: 28px; 
-            letter-spacing: 2px; 
-            margin-bottom: 20px;
-            color: var(--primary-blue);
+        .hero-text{
+          padding: 34px 0 22px;
+          max-width: 820px;   /* ⭐ 控制阅读宽度，关键 */
+          margin: 0 auto;
         }
-        .hero-text p { color: var(--text-gray); line-height: 2; font-size: 16px; }
+        
+        /* 主标题 */
+        .hero-text h2{
+          font-size: 30px;
+          line-height: 1.35;
+          letter-spacing: 1px;
+          margin: 20px 0 16px;
+          color: var(--primary-blue);
+        }
+        
+        /* 正文 */
+        .hero-text p{
+          font-size: 15px;
+          line-height: 1.95;   /* ⭐ 更舒适 */
+          color: #555;
+          text-align: justify; /* ⭐ 中文推荐 */
+        }
+        
+        /* 标题下轻微分隔（非常高级） */
+        .hero-text h2::after{
+          content:"";
+          display:block;
+          width:60px;
+          height:3px;
+          background:#2a5caa;
+          margin:14px auto 0;
+          border-radius:2px;
+        }
 
         /* 2. 产品六宫格：增加悬停动画 */
         .product-section {
@@ -148,86 +178,495 @@
             text-align: left;
         }
 
+
+
+/*导航栏logo区域 */
+/* Logo整体容器 */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;   /* 图标和文字之间的间距 */
+}
+
+/* Logo图标大小 */
+.logo img {
+    height: 60px;   /* ← 调大这里 */
+    width: auto;
+}
+.logo-text {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    font-family: "STSong", "SimSun", serif;
+}
+
+/* ===== 主导航布局 ===== */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+}
+
+/* 每个导航项 */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+/* 主标题 */
+.nav-title {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+/* 副标题 */
+.nav-sub {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+}
+
+/* 悬停效果 */
+.nav-item:hover .nav-title {
+    color: var(--primary-blue);
+}
+
+
+.nav-title {
+    font-size: 20px;
+    font-family: "STSong", "SimSun", serif;
+}
+
+
+.coverflow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height: 320px;
+    overflow: hidden;
+}
+
+.slide {
+    width: 30%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.4s ease;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+/* 中间图 */
+.slide.active {
+    width: 50%;                 /* ⭐ 中间更宽 */
+    transform: scale(1.12);     /* ⭐ 再放大一点 */
+    opacity: 1;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.3);
+    z-index: 2;                 /* ⭐ 防止被遮挡 */
+}
+/* 小标题：蓝底椭圆白字 */
+.section-tag-wrap{
+  text-align:center;
+  padding: 8px 0 26px; /* 控制上下留白 */
+}
+
+.section-tag{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: var(--primary-blue);
+  color:#fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  box-shadow: 0 10px 18px rgba(42,92,170,.18);
+}
+
+
+/* ===== 作品展示：参考图样式 ===== */
+.showcase{
+  position: relative;
+  padding: 10px 0 70px;
+}
+
+/* 外层容器：负责居中 + 留白 */
+.showcase-wrap{
+  position: relative;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 30px 8%;
+  display: grid;
+  grid-template-columns: 320px 1fr; /* 左装饰 + 右网格 */
+  gap: 28px;
+  align-items: center;
+}
+
+/* 紫色横条背景（关键） */
+.showcase-wrap::before{
+  content:"";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  transform: translateY(-50%);
+  height: 140px;                 /* 横条厚度 */
+  background: #3b46a6;           /* 你截图那种蓝紫色，可调 */
+  border-radius: 10px;
+  z-index: 0;
+}
+
+/* 左侧书法图 */
+.showcase-side{
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
+}
+
+/* 右侧不规则网格 */
+.showcase-grid{
+  position: relative;
+  z-index: 2; /* 压在横条上面 */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 150px;         /* 控制“砖块高度” */
+  gap: 18px;
+}
+
+/* 每个作品卡片 */
+.work{
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(0,0,0,.12);
+  transform: translateY(0);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.work:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 22px 45px rgba(0,0,0,.18);
+}
+.work img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 不规则排版：让部分卡片变大/变长 */
+.w1{ grid-column: 1 / span 1; grid-row: 1 / span 2; } /* 左上高一点 */
+.w2{ grid-column: 2 / span 1; grid-row: 1 / span 1; }
+.w3{ grid-column: 3 / span 1; grid-row: 1 / span 2; } /* 右上高一点 */
+.w4{ grid-column: 1 / span 1; grid-row: 3 / span 1; }
+.w5{ grid-column: 2 / span 1; grid-row: 2 / span 2; } /* 中间大块 */
+.w6{ grid-column: 3 / span 1; grid-row: 3 / span 1; }
+
+
+/* ===== 通草堆画书法横幅 ===== */
+.calligraphy-banner{
+  width: 100%;
+  background: #E4E3DF;   /* ⭐ 横杠颜色 */
+  padding: 20px 0;       /* ⭐ 控制横杠高度 */
+  text-align: center;    /* ⭐ 图片居中 */
+}
+
+/* 控制图片大小 */
+.calligraphy-banner img{
+  width: 40%;            /* ⭐ 调小关键 */
+  max-width: 900px;      /* 防止过大 */
+  height: auto;
+  display: inline-block;
+}
+
+
+/* ===== 手机端适配 ===== */
+@media (max-width: 768px){
+  .showcase-wrap{
+    grid-template-columns: 1fr;
+    padding: 20px 6%;
+  }
+  .showcase-wrap::before{
+    top: 40%;
+    height: 120px;
+  }
+  .showcase-side{
+    max-width: 220px;
+    margin: 0 auto;
+  }
+  .showcase-grid{
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 140px;
+  }
+  /* 手机端改成更规整的排版 */
+  .w1,.w2,.w3,.w4,.w5,.w6{ grid-column: auto; grid-row: auto; }
+  .w5{ grid-column: 1 / span 2; grid-row: auto; } /* 中间大图横跨两列 */
+}
+
+
+
+/* ===== 制作提示：左文案 + 右灰框 ===== */
+.howto{
+  width: min(1200px, 100%);
+  margin: 6px auto 18px;  /* ↓ 贴近横幅，减少上下空白 */
+  padding: 0 8%;
+}
+
+.howto-wrap{
+  display: grid;
+  grid-template-columns: 1fr 380px; /* 右侧灰块别太大，整体更紧凑 */
+  gap: 16px;                         /* ↓ 原来 28 太大了 */
+  align-items: center;
+}
+
+/* 左侧文案整体往右一点，但不要太夸张 */
+.howto-left{
+  font-size: 14px;
+  color: #333;
+  line-height: 1.9;
+  padding-left: 300px;   /* ⭐ 往右挪：你觉得还不够就 56 / 64 */
+  margin: 0;
+}
+
+.howto-left p{ margin: 6px 0; }     /* ↓ 行间距略收紧 */
+.howto-left .tip{ color:#666; }
+
+/* 右侧灰色块：位置&尺寸更像参考图 */
+.howto-right{
+  justify-self: end;
+  width: 380px;
+  height: 92px;          /* ↑ 比 74 稍高，更像你参考图那种“块” */
+  background: #d7d7d7;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+}
+
+.howto-right h3{
+  margin: 0;
+  font-size: 26px;       /* ↑ 更接近参考图大标题 */
+  font-weight: 900;
+  color: #222;
+}
+
+/* 制作详解整图展示 */
+.process-poster{
+  max-width: 900px;
+  margin: 0 auto 26px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.10);
+}
+.process-poster img{
+  width: 100%;
+  
+  height: 80%;
+  display: block;
+  object-fit: cover;
+}
+
+
+
+
+/* 手机端：上下堆叠 */
+@media (max-width: 768px){
+  .calligraphy-banner img{ width: 72%; }
+  .howto-wrap{ grid-template-columns: 1fr; }
+  .howto-left{ padding-left: 10px; }
+  .howto-right{
+    justify-self: center;
+    width: min(380px, 100%);
+    height: 84px;
+  }
+}
+
         @media (max-width: 768px) {
-            header { padding: 15px 20px; }
+			header {
+			    padding: 20px 8%;
+			}
             .product-section { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .process-steps { flex-direction: column; }
             .hero-text h2 { font-size: 22px; }
             .culture-section { padding: 30px; }
         }
+		
+		@media (max-width: 768px) {
+		
+		    /* 隐藏副标题 */
+		    .nav-sub {
+		        display: none;
+		    }
+		
+		    /* 缩小主标题 */
+		    .nav-title {
+		        font-size: 16px;
+		    }
+		
+		    /* 缩小导航间距 */
+		    .main-nav {
+		        gap: 20px;
+		    }
+		}
+		
+		
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-box">
-            <img src="图片/logo.png" alt="通草堆画" style="object-fit: contain;">
-        </div>
-        <nav>
-            <a href="#">首页</a><a href="#">品牌故事</a><a href="#">作品赏析</a><a href="#">私人定制</a>
-        </nav>
+
+		<div class="logo">
+		    <img src="图片/logo.png" alt="logo">
+		    <span class="logo-text">通草堆话</span>
+		</div>
+		
+       <nav class="main-nav">
+           <a href="#" class="nav-item">
+               <span class="nav-title">开始</span>
+               <span class="nav-sub">开始你的旅程</span>
+           </a>
+       
+           <a href="#" class="nav-item">
+               <span class="nav-title">介绍</span>
+               <span class="nav-sub">了解通草堆画</span>
+           </a>
+       
+           <a href="#" class="nav-item">
+               <span class="nav-title">周边</span>
+               <span class="nav-sub">来抽取你的盲盒</span>
+           </a>
+       
+           <a href="#" class="nav-item">
+               <span class="nav-title">探索</span>
+               <span class="nav-sub">和大家一起了解通草堆画</span>
+           </a>
+       </nav>
     </header>
 
     <main>
         <section class="hero">
-            <div class="hero-banner">
-                <img src="图片/kongque.jpg" alt="通草堆画孔雀图">
+            <div class="coverflow">
+					  <img src="图片/shouye2.jpg" class="slide active">
+            <img src="图片/kongque.jpg" class="slide">
+		
+            <img src="图片/shouye3.jpg" class="slide">
+              
+             
+            
             </div>
             <article class="hero-text">
-                <h2>您值得信赖的非遗守护者 · 通草堆画</h2>
-                <p>通草画艺术起源于秦汉，盛行于两晋，不仅是技艺的堆叠，更是对中式审美意境的深情表达。每一片通草的修剪与粘贴，都凝聚了匠人对时光的敬畏。</p>
+                <h2>您值得信赖的非遗守护者 · 通草堆话</h2>
+                <p>在全球文化多元发展与数字化转型的双重背景下，通草堆画这一非遗瑰宝面临大众认知度低、传播渠道有限、传统展示形式吸引
+力不足的传承困境。对此，我们计划创建通草堆画专属非遗品牌，错定“传统工艺焕新"定位，设计融合非遗纹样与现代审美的视觉
+标识。同时以盲盒为核心传播售卖媒介，拓展文创衍生品、数字藏品等多元载体，打造专属IP;搭建线上平台联合非遗传承人与匠
+人，展示制作过程，讲述文化故事，搭配线下制作体验等活动，让消费者在惊喜感与沉浸感中感受其工艺精巧与文化内涵。通过系
+列举措沉淀品牌价值，放大品牌效应，形成“品牌引流一用户转化一文化传播”的正向循环，激发大众对非遗的兴趣，助力通草堆画
+活态传承与创新推广。</p>
             </article>
         </section>
 
-        <div style="text-align: center; padding-bottom: 40px;">
-            <img src="图片/title_calligraphy.png" alt="书法标题" style="width: 200px; margin: 0 auto; height: auto;">
-        </div>
+<section class="showcase">
+  <div class="section-tag-wrap">
+    <span class="section-tag">作品展示</span>
+  </div>
 
-        <section class="product-section">
-            <div class="product-card"><img src="图片/p1.jpg" alt="作品1"></div>
-            <div class="product-card"><img src="图片/p2.jpg" alt="作品2"></div>
-            <div class="product-card"><img src="图片/p3.jpg" alt="作品3"></div>
-            <div class="product-card"><img src="图片/p4.jpg" alt="作品4"></div>
-            <div class="product-card"><img src="图片/p5.jpg" alt="作品5"></div>
-            <div class="product-card"><img src="图片/p6.jpg" alt="作品6"></div>
-        </section>
+  <div class="showcase-wrap">
 
-        <section class="process-section">
-            <h3 class="section-title">通草堆画制作详解</h3>
-            <div class="process-steps">
-                <div class="step-item">
-                    <div class="step-img-box"><img src="图片/step1.jpg" alt="步骤1"></div>
-                    <p>01. 裁剪通草片</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-img-box"><img src="图片/step2.jpg" alt="步骤2"></div>
-                    <p>02. 粘贴与堆叠</p>
-                </div>
-                <div class="step-item">
-                    <div class="step-img-box"><img src="图片/step3.jpg" alt="步骤3"></div>
-                    <p>03. 局部修整成型</p>
-                </div>
-            </div>
+    <!-- 左侧书法/装饰图（参考图左边那张） -->
+    <img class="showcase-side" src="图片/非物质文化遗产.png" alt="非遗文化 书法装饰">
 
+    <!-- 右侧作品网格 -->
+    <div class="showcase-grid">
+
+      <a class="work w1" href="#"><img src="图片/p1.jpg" alt="作品1"></a>
+      <a class="work w2" href="#"><img src="图片/p2.jpg" alt="作品2"></a>
+      <a class="work w3" href="#"><img src="图片/p3.jpg" alt="作品3"></a>
+      <a class="work w4" href="#"><img src="图片/p4.jpg" alt="作品4"></a>
+      <a class="work w5" href="#"><img src="图片/p5.jpg" alt="作品5"></a>
+      <a class="work w6" href="#"><img src="图片/p6.jpg" alt="作品6"></a>
+
+    </div>
+  </div>
+
+</section>
+  <br><br>
+  <!-- ===== 大书法横幅（通草堆画） ===== -->
+  <section class="calligraphy-banner">
+    <img src="图片/通草堆画书法.jpg" alt="通草堆画书法横幅">
+  </section>
+  
+  <br><br>
+
+<!-- ===== 制作提示：左文案 + 右灰框 ===== -->
+<section class="howto">
+  <div class="howto-wrap">
+    <!-- 左侧文案（你可以改成你自己的文字） -->
+    <div class="howto-left">
+		<p>1.切草片:把通草条切成伤用卡大小的薄片(可染彩色)</p>
+		<p>2.堆贴大法:</p>
+		<p>-比如做一朵花:花堆5层，叶子堆3层像像蛋糕被花!</p>
+		<p>-用刀刮出孤度:岛羽毛用刀尖轻制，毛茸营立现</p>
+		
+		<p>3.装慎定形:粘到绒布底板上，配木框————完成!</p>
+		<p>冷知识:一只鹦鹉要贴30+层草片，鸟嘴得雕2小时</p>
+     
+      <p class="tip">小贴士：一只作品通常需要 30+ 片通草，耐心很重要。</p>
+    </div>
+
+    <!-- 右侧灰色框 -->
+    <div class="howto-right">
+      <h3>如何制作通草堆画</h3>
+    </div>
+  </div>
+</section>
+       
+
+<div class="process-poster">
+  <img src="图片/制作详解整图.jpg" alt="通草堆画制作详解">
+</div>
             <div class="video-box">
                 <img src="图片/video_cover.jpg" alt="视频封面">
                 <div class="play-overlay">
                     <div class="play-btn">▶</div>
                 </div>
             </div>
-        </section>
+        
 
         <section class="culture-section">
             <h3 style="color: #4a5a2c; margin-bottom: 25px;">通草堆画的文化与价值</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
                 <div>
-                    <h4 style="color: #2a5caa;">东方审美与中式意境</h4>
-                    <p style="font-size: 14px; color: #555;">通草堆画以纸为媒，题材取自花鸟山水，追求“天人合一”的审美高度。</p>
+                  
+                	<h4 style="color: #2a5caa;">东方审美与中式意境</h4>
+                    <p style="font-size: 14px; color: #555;">
+通草堆画以素雅、温润、含蓄为美，题材多取自花鸟、山水、吉祥纹样、古典故事，体现中国人"天人合一、清雅内敛”的审美追求，是极具东方气质的传统艺术。</div>
+
+				<div>
+                  
+					<h4 style="color: #2a5caa;">民间技艺与匠人精神</h4>
+                    <p style="font-size: 14px; color: #555;">从选材、切片、塑形、堆叠到染色、装裱，全程依赖手工经验与耐心，没有统一模具，不可批量复制。每一件作品都承载着匠人专注、坚守、精益求精的工匠精神。</p>
                 </div>
-                <div>
-                    <h4 style="color: #2a5caa;">技艺精湛与独具匠心</h4>
-                    <p style="font-size: 14px; color: #555;">全过程纯手工制作，无法被机器复制，每一件作品都是匠人心血的结晶。</p>
+                
+				<div>
+                    <h4 style="color: #2a5caa;">民俗文化与吉祥寓意</h4>
+                    <p style="font-size: 14px; color: #555;">作品多包含吉祥文化:松鹤延年、富贵牡丹、喜鹊登梅、龙凤呈样等，既是装饰，也是民间祈福、礼仪、节庆文化的载体，记录着中国传统生活美学。</p>
                 </div>
+				<div>
+					<h4 style="color: #2a5caa;">地域文化与历史记忆</h4>
+				                    <p style="font-size: 14px; color: #555;">
+				通草堆画起源于民间，兴盛于地方，与贵州、湖南等地区的民俗、手工艺、商贸历史紧
+				密相连，是地方文化特色与历史传承的活化石。</div>
+							
             </div>
         </section>
     </main>
@@ -238,3 +677,13 @@
 
 </body>
 </html>
+<script>
+const slides = document.querySelectorAll(".slide");
+
+slides.forEach(slide => {
+    slide.addEventListener("click", () => {
+        slides.forEach(s => s.classList.remove("active"));
+        slide.classList.add("active");
+    });
+});
+</script>
